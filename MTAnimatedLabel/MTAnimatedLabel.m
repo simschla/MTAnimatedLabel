@@ -147,14 +147,14 @@
     [self setNeedsDisplay];
 }
 
-- (UITextAlignment)textAlignment
+- (NSTextAlignment)textAlignment
 {
-    return [MTAnimatedLabel UITextAlignmentFromCAAlignment:self.textLayer.alignmentMode];
+    return [MTAnimatedLabel NSTextAlignmentFromCAAlignment:self.textLayer.alignmentMode];
 }
 
-- (void)setTextAlignment:(UITextAlignment)textAlignment
+- (void)setTextAlignment:(NSTextAlignment)textAlignment
 {
-    self.textLayer.alignmentMode = [MTAnimatedLabel CAAlignmentFromUITextAlignment:textAlignment];
+    self.textLayer.alignmentMode = [MTAnimatedLabel CAAlignmentFromNSTextAlignment:textAlignment];
 }
 
 #pragma mark - UILabel Layer override
@@ -169,23 +169,23 @@
 
 #pragma mark - Utility Methods
 
-+ (NSString *)CAAlignmentFromUITextAlignment:(UITextAlignment)textAlignment
++ (NSString *)CAAlignmentFromNSTextAlignment:(NSTextAlignment)textAlignment
 {    
     switch (textAlignment) {
-        case UITextAlignmentLeft:   return kCAAlignmentLeft;
-        case UITextAlignmentCenter: return kCAAlignmentCenter;
-        case UITextAlignmentRight:  return kCAAlignmentRight;
+        case NSTextAlignmentLeft:   return kCAAlignmentLeft;
+        case NSTextAlignmentCenter: return kCAAlignmentCenter;
+        case NSTextAlignmentRight:  return kCAAlignmentRight;
         default:                    return kCAAlignmentNatural;
     }
 }
 
-+ (UITextAlignment)UITextAlignmentFromCAAlignment:(NSString *)alignment
++ (NSTextAlignment)NSTextAlignmentFromCAAlignment:(NSString *)alignment
 {
-    if ([alignment isEqualToString:kCAAlignmentLeft])       return UITextAlignmentLeft;
-    if ([alignment isEqualToString:kCAAlignmentCenter])     return UITextAlignmentCenter;
-    if ([alignment isEqualToString:kCAAlignmentRight])      return UITextAlignmentRight;
-    if ([alignment isEqualToString:kCAAlignmentNatural])    return UITextAlignmentLeft;
-    return UITextAlignmentLeft;
+    if ([alignment isEqualToString:kCAAlignmentLeft])       return NSTextAlignmentLeft;
+    if ([alignment isEqualToString:kCAAlignmentCenter])     return NSTextAlignmentCenter;
+    if ([alignment isEqualToString:kCAAlignmentRight])      return NSTextAlignmentRight;
+    if ([alignment isEqualToString:kCAAlignmentNatural])    return NSTextAlignmentLeft;
+    return NSTextAlignmentLeft;
 }
 
 #pragma mark - LayoutSublayers
