@@ -32,13 +32,21 @@
 #define kGradientStartPointKey  @"startPoint"
 #define kGradientEndPointKey    @"endPoint"
 
+
 @interface MTAnimatedLabel () 
     
 @property (nonatomic, strong) CATextLayer *textLayer;
 
+- (void)setStartAndEndPoints:(CAGradientLayer *)layer;
+
+- (NSValue *)calculateEndPointToValue;
+
+- (NSValue *)calculateStartPointToValue;
 @end
 
 @implementation MTAnimatedLabel
+
+@synthesize animationDirection;
 
 #pragma mark - Initialization
 
@@ -48,11 +56,11 @@
     self.tint               = kGradientTint;
     self.animationDuration  = kAnimationDuration;
     self.gradientWidth      = kGradientSize;
+    self.animationDirection = AnimationDirectionLeftToRight;
     
     CAGradientLayer *gradientLayer  = (CAGradientLayer *)self.layer;
     gradientLayer.backgroundColor   = [super.textColor CGColor];
-    gradientLayer.startPoint        = CGPointMake(-self.gradientWidth, 0.);
-    gradientLayer.endPoint          = CGPointMake(0., 0.);
+    [self setStartAndEndPoints:gradientLayer];
     gradientLayer.colors            = @[(id)[self.textColor CGColor],(id)[self.tint CGColor], (id)[self.textColor CGColor]];
 
     self.textLayer                      = [CATextLayer layer];
@@ -73,6 +81,23 @@
         and therefore this label subclass should ONLY BE USED if animation is required
      */
     gradientLayer.mask = self.textLayer;
+}
+
+- (void)setAnimationDirection:(AnimationDirection)animationDirection1 {
+    animationDirection = animationDirection1;
+    [self setStartAndEndPoints:(CAGradientLayer *)self.layer];
+}
+
+
+- (void)setStartAndEndPoints:(CAGradientLayer *)layer {
+    if(self.animationDirection == AnimationDirectionLeftToRight) {
+        layer.startPoint        = CGPointMake(-self.gradientWidth, 0.);
+        layer.endPoint          = CGPointMake(0., 0.);
+    } else {
+        layer.startPoint        = CGPointMake(1, 0.);
+        layer.endPoint          = CGPointMake(1+self.gradientWidth, 0.);
+    }
+
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -213,11 +238,11 @@
     if([gradientLayer animationForKey:kAnimationKey] == nil)
     {
         CABasicAnimation *startPointAnimation = [CABasicAnimation animationWithKeyPath:kGradientStartPointKey];
-        startPointAnimation.toValue = [NSValue valueWithCGPoint:CGPointMake(1.0, 0)];
+        startPointAnimation.toValue = [self calculateStartPointToValue];
         startPointAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         
         CABasicAnimation *endPointAnimation = [CABasicAnimation animationWithKeyPath:kGradientEndPointKey];
-        endPointAnimation.toValue = [NSValue valueWithCGPoint:CGPointMake(1+self.gradientWidth, 0)];
+        endPointAnimation.toValue = [self calculateEndPointToValue];
         endPointAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         
         CAAnimationGroup *group = [CAAnimationGroup animation];
@@ -227,6 +252,22 @@
         group.repeatCount = FLT_MAX;
         
         [gradientLayer addAnimation:group forKey:kAnimationKey];
+    }
+}
+
+- (NSValue *)calculateEndPointToValue {
+    if(self.animationDirection == AnimationDirectionLeftToRight) {
+        return [NSValue valueWithCGPoint:CGPointMake(1+self.gradientWidth, 0)];
+    } else {
+        return [NSValue valueWithCGPoint:CGPointMake(0, 0)];
+    }
+}
+
+- (NSValue *)calculateStartPointToValue {
+    if(self.animationDirection == AnimationDirectionLeftToRight) {
+        return [NSValue valueWithCGPoint:CGPointMake(1.0, 0)];
+    } else {
+        return [NSValue valueWithCGPoint:CGPointMake(-self.gradientWidth, 0)];
     }
 }
 

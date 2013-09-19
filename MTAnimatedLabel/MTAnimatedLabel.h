@@ -26,11 +26,18 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreText/CoreText.h>
 
+typedef enum  {
+    AnimationDirectionLeftToRight,
+    AnimationDirectionRightToLeft
+} AnimationDirection;
+
 @interface MTAnimatedLabel : UILabel
     
 @property (nonatomic)           CGFloat animationDuration;
 @property (nonatomic)           CGFloat gradientWidth;
 @property (nonatomic, strong)   UIColor *tint;
+@property (nonatomic)           AnimationDirection animationDirection;
+
 
 - (void)startAnimating;
 - (void)stopAnimating;
